@@ -264,6 +264,85 @@ function renderSchedule(teacherId) {
         scheduleDays.innerHTML = '<div class="text-muted">Расписание не доступно</div>';
     }
 }
+// 1. Создаем массив преимуществ
+const features = [
+    "Опытные преподаватели",
+    "Индивидуальный подход", 
+    "Международные сертификаты"
+  ];
+  
+  // 2. Выводим в блок features
+  const featuresContainer = document.querySelector('.features__grid');
+  
+  features.forEach((feature, index) => {
+    featuresContainer.innerHTML += `
+      <div class="feature">
+        <h3>Преимущество ${index + 1}</h3>
+        <p>${feature}</p>
+      </div>
+    `;
+  });
+  // Кнопка скролла
+const scrollBtn = document.getElementById('scrollTopBtn');
 
-// Запуск при загрузке страницы
-document.addEventListener('DOMContentLoaded', initForms);
+window.addEventListener('scroll', () => {
+  scrollBtn.style.display = (window.pageYOffset > 300) ? 'block' : 'none';
+});
+
+scrollBtn.addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+});
+// 1. Создаем объект с данными
+const featuresData = {
+    feature1: {
+      icon: 'fas fa-chalkboard-teacher',
+      title: 'Опытные преподаватели',
+      description: 'Все наши преподаватели имеют международные сертификаты'
+    },
+    feature2: {
+      icon: 'fas fa-user-graduate',
+      title: 'Индивидуальный подход',
+      description: 'Программа подбирается под ваш уровень'
+    }
+  };
+  
+  // 2. Выводим данные в вёрстку 
+  const featuresContainer = document.querySelector('.features__grid');
+  featuresContainer.innerHTML = `
+    <div class="feature">
+      <i class="${featuresData.feature1.icon}"></i>
+      <h3>${featuresData.feature1.title}</h3>
+      <p>${featuresData.feature1.description}</p>
+    </div>
+  `;
+
+  // Загрузка данных из JSON
+async function loadData() {
+    try {
+      const response = await fetch('data.json');
+      if (!response.ok) throw new Error('Ошибка загрузки');
+      const data = await response.json();
+      renderFeatures(data.features);
+    } catch (error) {
+      console.error('Ошибка:', error);
+    }
+  }
+  
+  function renderFeatures(features) {
+    const container = document.querySelector('.features__grid');
+    container.innerHTML = features.map(feature => `
+      <div class="feature">
+        <i class="${feature.icon}"></i>
+        <h3>${feature.title}</h3>
+        <p>${feature.text}</p>
+      </div>
+    `).join('');
+  }
+  
+  // Запускаем загрузку при старте
+  loadData();
+
+
